@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GreenBits · Lo que sobra, brota</title>
+  <meta name="description" content="GreenBits conecta a productores de San Carlos con compradores locales para darle salida a los productos de segunda y a la biomasa.">
+  <link rel="icon" href="assets/img/favicon.png">
+
+  <!-- Brand fonts: Fraunces (titles), DM Sans (UI), Cormorant Garamond (slogan), Bree Serif (badges) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bree+Serif&family=Cormorant+Garamond:ital,wght@0,500;1,500;1,600&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,800;0,9..144,900;1,9..144,500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/pages/home.css">
+</head>
+<body data-page="home">
+
+  <!-- Shared navbar is injected here by layout.js -->
+  <div data-layout="header" data-variant="transparent"></div>
+
+  <main>
+    <!-- =============================================================
+         HERO — split layout: blurred panel on the left, big title
+         whose letters "cut through" the panel to show the pattern.
+         Slides are defined in assets/js/pages/home.js
+         ============================================================= -->
+    <section class="hero" aria-roledescription="carrusel" aria-label="Presentación">
+      <div class="hero__bg" aria-hidden="true"></div>
+      <div class="hero__panel" aria-hidden="true"></div>
+      <div class="hero__leaves" aria-hidden="true">
+        <svg viewBox="0 0 160 160"><g fill="#07945a"><path d="M80 80c-6-30 8-56 40-66 4 34-12 56-40 66Z"/><path d="M76 84c-28-6-46-28-44-58 30 4 46 28 44 58Z" fill="#0aa866"/><path d="M84 88c22-16 52-14 68 6-24 16-50 14-68-6Z" fill="#034e2f"/></g><path d="M80 80 120 14M76 84 32 26M84 88l68 6" stroke="#cfe8c8" stroke-width="1.6" opacity=".6"/></svg>
+      </div>
+
+      <!-- Title rendered twice: pattern-filled (left of split) + solid (right of split) -->
+      <div class="hero__title-wrap" aria-hidden="true" data-hero-title>
+        <div class="hero__layer hero__layer--fill">
+          <p class="hero__kicker" data-hero-kicker>Lo que</p>
+          <div class="hero__title"><span data-hero-l1>SOBRA,</span><span data-hero-l2>BROTA.</span></div>
+        </div>
+        <div class="hero__layer hero__layer--solid">
+          <p class="hero__kicker" data-hero-kicker>Lo que</p>
+          <div class="hero__title"><span data-hero-l1>SOBRA,</span><span data-hero-l2>BROTA.</span></div>
+        </div>
+      </div>
+      <h1 class="visually-hidden" data-hero-a11y>Lo que sobra, brota</h1>
+
+      <div class="hero__content container">
+        <p class="hero__text" data-hero-text>
+          GreenBits conecta a productores de San Carlos con compradores locales para darle salida
+          a los productos de segunda y a la biomasa que hoy se bota.
+        </p>
+        <div class="hero__ctas">
+          <a class="btn btn--accent" href="catalogo.html" data-hero-cta>Explorar lotes</a>
+          <a class="hero__link" href="publicar.html">Soy productor: publicar un lote →</a>
+        </div>
+      </div>
+
+      <!-- Featured lot floating card (changes with each slide) -->
+      <button class="hero__card" type="button" data-hero-card aria-label="Ver lote destacado"></button>
+
+      <!-- Slide controls -->
+      <div class="hero__dots" role="tablist" aria-label="Diapositivas" data-hero-dots></div>
+      <div class="hero__arrows">
+        <button class="hero__arrow" type="button" data-hero-prev aria-label="Anterior"></button>
+        <button class="hero__arrow hero__arrow--next" type="button" data-hero-next aria-label="Siguiente"></button>
+      </div>
+    </section>
+
+    <!-- =============================================================
+         INTRO + IMPACT NUMBERS
+         ============================================================= -->
+    <section class="section intro" id="impacto">
+      <div class="container intro__grid">
+        <div class="reveal">
+          <span class="eyebrow">Juntos por un campo sin desperdicio</span>
+          <h2 class="section-title">Cosechamos <em>valor</em> donde antes había basura.</h2>
+          <p class="section-lead">
+            Cada semana se pierden toneladas de fruta “fea” y de cáscaras, bagazo y podas.
+            GreenBits las convierte en ingreso para quien produce y en materia prima barata para quien compra.
+          </p>
+          <form class="join-form" data-join-form novalidate>
+            <label class="visually-hidden" for="join-phone">Número de WhatsApp</label>
+            <input class="input" id="join-phone" type="tel" placeholder="Tu WhatsApp (8 dígitos)" inputmode="numeric" maxlength="9">
+            <button class="btn btn--primary" type="submit">Recibir alertas</button>
+          </form>
+          <div class="join-proof">
+            <div class="avatars" aria-hidden="true"><span>ES</span><span>MV</span><span>AJ</span><span>+</span></div>
+            <p>Más de <strong>120 productores</strong> de San Carlos ya publican sus lotes.</p>
+          </div>
+        </div>
+        <div class="stats" data-stats></div>
+      </div>
+    </section>
+
+    <!-- =============================================================
+         MISSION — 3 tall image cards
+         ============================================================= -->
+    <section class="section mission">
+      <div class="container mission__grid">
+        <div class="mission__text reveal">
+          <span class="eyebrow">Nuestra misión</span>
+          <h2 class="section-title">Una <em>segunda vida</em> para lo que sobra en el campo.</h2>
+          <p class="section-lead">Lo que no pasa el estándar de tamaño o de aspecto sigue siendo comida, abono o materia prima. Solo le faltaba un lugar donde encontrarse con quien lo necesita.</p>
+          <div class="mission__actions">
+            <a class="btn btn--primary" href="catalogo.html">Ver lotes disponibles</a>
+            <a class="btn btn--ghost" href="#como-funciona">Cómo funciona</a>
+          </div>
+        </div>
+
+        <a class="mission-card reveal" href="catalogo.html?tipo=segunda" style="--pos: 18% 30%">
+          <span class="mission-card__icon"><i class="i" data-icon="basket"></i></span>
+          <h3>Productos de segunda</h3>
+          <p>Fruta y verdura fuera del estándar, perfecta para jugos, salsas y repostería.</p>
+        </a>
+        <a class="mission-card mission-card--earth reveal" href="catalogo.html?tipo=biomasa" style="--pos: 70% 60%">
+          <span class="mission-card__icon"><i class="i" data-icon="recycle"></i></span>
+          <h3>Biomasa</h3>
+          <p>Cáscaras, bagazo, hojas y podas para compost, alimento animal y cosmética.</p>
+        </a>
+        <a class="mission-card mission-card--green reveal" href="#como-funciona" style="--pos: 45% 85%">
+          <span class="mission-card__icon"><i class="i" data-icon="sprout"></i></span>
+          <h3>Comercio local</h3>
+          <p>Productor y comprador se ponen de acuerdo directo, sin intermediarios.</p>
+        </a>
+      </div>
+    </section>
+
+    <!-- =============================================================
+         STORY — Eduardo's case (from the team's original demo)
+         ============================================================= -->
+    <section class="section story">
+      <div class="container story__grid">
+        <div class="story__visual reveal" aria-hidden="true">
+          <div class="story__phone">
+            <div class="story__phone-bar"><span></span></div>
+            <p class="story__phone-label">Nuevo lote publicado</p>
+            <div data-story-card></div>
+            <div class="story__notify"><i class="i" data-icon="whatsapp"></i> <span><strong>Soda La Esquina</strong> reservó 40 kg</span></div>
+          </div>
+        </div>
+        <div class="reveal">
+          <span class="eyebrow">Caso de ejemplo</span>
+          <h2 class="section-title">El problema de <em>Eduardo</em></h2>
+          <p class="story__quote quote">“Vendo a los mayoristas, pero nunca me reciben la cosecha completa. Voy a la feria cada semana y aun así vuelvo con producto.”</p>
+          <p class="section-lead">Lo que sobraba terminaba en la basura, igual que las cáscaras y la biomasa. Con GreenBits, Eduardo publica su lote en minutos y los compradores de la zona lo encuentran.</p>
+          <ul class="story__list">
+            <li><i class="i" data-icon="check"></i> Publica desde el celular en 4 toques</li>
+            <li><i class="i" data-icon="check"></i> Recibe reservas por WhatsApp</li>
+            <li><i class="i" data-icon="check"></i> Cobra al entregar, sin comisiones ocultas</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================================
+         HOW IT WORKS
+         ============================================================= -->
+    <section class="section how" id="como-funciona">
+      <div class="container">
+        <div class="how__head reveal">
+          <span class="eyebrow">Cómo funciona</span>
+          <h2 class="section-title">De la finca a tu negocio en <em>tres pasos</em>.</h2>
+        </div>
+        <ol class="how__steps">
+          <li class="how-step reveal">
+            <span class="how-step__num">01</span>
+            <span class="how-step__icon"><i class="i" data-icon="upload"></i></span>
+            <h3>Publica</h3>
+            <p>El productor elige qué tiene, cuánto y a qué precio. Son cuatro toques desde cualquier pantalla.</p>
+          </li>
+          <li class="how-step reveal">
+            <span class="how-step__num">02</span>
+            <span class="how-step__icon"><i class="i" data-icon="search"></i></span>
+            <h3>Encuentra</h3>
+            <p>Sodas, reposterías, compostaje, cosmética natural y fincas filtran por tipo de producto y por zona.</p>
+          </li>
+          <li class="how-step reveal">
+            <span class="how-step__num">03</span>
+            <span class="how-step__icon"><i class="i" data-icon="basket"></i></span>
+            <h3>Reserva</h3>
+            <p>El comprador reserva directo con el productor y coordinan retiro o entrega, sin intermediarios.</p>
+          </li>
+        </ol>
+        <div class="buyers reveal">
+          <p>¿Quién compra en GreenBits?</p>
+          <div class="buyers__list" data-buyers></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =============================================================
+         FEATURED LOTS (carousel) + ALERTS BOX
+         ============================================================= -->
+    <section class="section featured">
+      <div class="container featured__grid">
+        <div class="featured__track-wrap">
+          <div class="featured__track" data-featured-track></div>
+        </div>
+        <aside class="featured__side reveal">
+          <div class="featured__arrows">
+            <button class="icon-btn" type="button" data-featured-prev aria-label="Anterior"><i class="i" data-icon="arrowLeft"></i></button>
+            <button class="icon-btn" type="button" data-featured-next aria-label="Siguiente"><i class="i" data-icon="arrowRight"></i></button>
+          </div>
+          <h2 class="section-title" style="font-size:clamp(30px,3.4vw,40px)">Lotes frescos.<br>Precios <em>justos</em>.</h2>
+          <p class="section-lead">Lo publicado esta semana por productores de la zona norte. Reservá en un minuto.</p>
+          <a class="featured__all" href="catalogo.html">Ver todo el catálogo →</a>
+
+          <form class="alert-box" data-alert-form novalidate>
+            <h3>Avisame cuando haya…</h3>
+            <p>Elegí un producto y te escribimos por WhatsApp cuando alguien publique un lote.</p>
+            <div class="alert-box__row">
+              <select class="select" aria-label="Producto" data-alert-product></select>
+              <button class="btn btn--primary btn--sm" type="submit">Activar</button>
+            </div>
+          </form>
+        </aside>
+      </div>
+    </section>
+
+    <!-- =============================================================
+         PRODUCER CTA BAND
+         ============================================================= -->
+    <section class="cta-band">
+      <div class="container cta-band__inner reveal">
+        <img class="cta-band__mark" src="assets/img/isotipo-orange.png" alt="" aria-hidden="true">
+        <div>
+          <p class="cta-band__quote quote">“Lo que sobra, brota”</p>
+          <h2>¿Tenés producto que no se vende?</h2>
+          <p>Publicalo gratis y dejá que los compradores de la zona lo encuentren.</p>
+        </div>
+        <a class="btn btn--light" href="publicar.html">Publicar mi primer lote</a>
+      </div>
+    </section>
+  </main>
+
+  <div data-layout="footer"></div>
+
+  <!-- Scripts: order matters (core → data → components → page → main) -->
+  <script src="assets/js/core/utils.js"></script>
+  <script src="assets/js/data/lots.js"></script>
+  <script src="assets/js/core/store.js"></script>
+  <script src="assets/js/components/illustrations.js"></script>
+  <script src="assets/js/components/ui.js"></script>
+  <script src="assets/js/components/lot-card.js"></script>
+  <script src="assets/js/components/lot-detail.js"></script>
+  <script src="assets/js/components/layout.js"></script>
+  <script src="assets/js/components/reveal.js"></script>
+  <script src="assets/js/pages/home.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

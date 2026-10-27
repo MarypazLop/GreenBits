@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Catálogo de lotes · GreenBits</title>
+  <meta name="description" content="Explorá lotes de productos de segunda y biomasa publicados por productores de San Carlos.">
+  <link rel="icon" href="assets/img/favicon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bree+Serif&family=Cormorant+Garamond:ital,wght@0,500;1,500;1,600&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,800;0,9..144,900;1,9..144,500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/pages/catalog.css">
+</head>
+<body data-page="catalog">
+
+  <div data-layout="header" data-variant="solid"></div>
+
+  <main>
+    <!-- ===== Page header with search ===== -->
+    <section class="catalog-hero">
+      <div class="container catalog-hero__inner">
+        <nav class="breadcrumb" aria-label="Ruta"><a href="index.html">Inicio</a> / <span>Catálogo</span></nav>
+        <h1 class="catalog-hero__title">Encontrá lo que <em>sobra</em> cerca tuyo.</h1>
+        <p class="catalog-hero__lead">Lotes publicados por productores de San Carlos. Reservá directo, sin intermediarios.</p>
+
+        <form class="search" role="search" data-search-form>
+          <i class="i" data-icon="search"></i>
+          <label class="visually-hidden" for="search-input">Buscar lotes</label>
+          <input id="search-input" type="search" placeholder="Buscá tomate, cáscara de piña, bagazo…" autocomplete="off" data-search>
+          <button class="btn btn--accent" type="submit">Buscar</button>
+        </form>
+
+        <div class="type-tabs" role="tablist" aria-label="Tipo de producto" data-type-tabs>
+          <button class="type-tab" role="tab" data-type="all">Todos <span data-count-all></span></button>
+          <button class="type-tab" role="tab" data-type="segunda">Productos de segunda <span data-count-segunda></span></button>
+          <button class="type-tab" role="tab" data-type="biomasa">Biomasa <span data-count-biomasa></span></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Filters + results ===== -->
+    <section class="container catalog">
+      <aside class="filters" id="filters" aria-label="Filtros" data-filters>
+        <div class="filters__head">
+          <h2>Filtros</h2>
+          <button class="filters__clear" type="button" data-clear-filters>Limpiar</button>
+          <button class="icon-btn filters__close" type="button" data-close-filters aria-label="Cerrar filtros"><i class="i" data-icon="close"></i></button>
+        </div>
+
+        <fieldset class="filters__group">
+          <legend>Producto</legend>
+          <div class="filters__options" data-filter-products></div>
+        </fieldset>
+
+        <fieldset class="filters__group">
+          <legend>Zona (San Carlos)</legend>
+          <div class="filters__options" data-filter-zones></div>
+        </fieldset>
+
+        <fieldset class="filters__group">
+          <legend>Precio máximo</legend>
+          <input class="range" type="range" min="10" max="800" step="10" value="800" data-filter-price aria-label="Precio máximo por unidad">
+          <p class="filters__price">Hasta <strong data-price-label>₡800</strong> por kg/unid.</p>
+        </fieldset>
+
+        <fieldset class="filters__group">
+          <legend>Opciones</legend>
+          <label class="switch"><input type="checkbox" data-filter-delivery><span></span> Solo con entrega</label>
+          <label class="switch"><input type="checkbox" data-filter-available checked><span></span> Ocultar agotados</label>
+        </fieldset>
+
+        <button class="btn btn--primary btn--block filters__apply" type="button" data-close-filters>Ver resultados</button>
+      </aside>
+
+      <div class="results">
+        <div class="results__toolbar">
+          <button class="btn btn--ghost btn--sm results__filters-btn" type="button" data-open-filters aria-controls="filters">
+            <i class="i" data-icon="filter"></i> Filtros
+          </button>
+          <p class="results__count" aria-live="polite" data-results-count></p>
+          <label class="results__sort">
+            <span>Ordenar</span>
+            <select class="select" data-sort>
+              <option value="recent">Más recientes</option>
+              <option value="price-asc">Menor precio</option>
+              <option value="price-desc">Mayor precio</option>
+              <option value="qty-desc">Mayor cantidad</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="active-filters" data-active-filters></div>
+
+        <div class="results__grid" data-results></div>
+
+        <div class="empty" data-empty hidden>
+          <div class="empty__art" data-empty-art></div>
+          <h2>No hay lotes con esos filtros… todavía.</h2>
+          <p>Probá con otra zona o activá una alerta y te avisamos cuando alguien publique.</p>
+          <div class="empty__actions">
+            <button class="btn btn--primary" type="button" data-clear-filters>Limpiar filtros</button>
+            <button class="btn btn--ghost" type="button" data-empty-alert>Crear alerta</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div data-layout="footer"></div>
+
+  <script src="assets/js/core/utils.js"></script>
+  <script src="assets/js/data/lots.js"></script>
+  <script src="assets/js/core/store.js"></script>
+  <script src="assets/js/components/illustrations.js"></script>
+  <script src="assets/js/components/ui.js"></script>
+  <script src="assets/js/components/lot-card.js"></script>
+  <script src="assets/js/components/lot-detail.js"></script>
+  <script src="assets/js/components/layout.js"></script>
+  <script src="assets/js/components/reveal.js"></script>
+  <script src="assets/js/pages/catalog.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

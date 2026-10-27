@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Publicar un lote · GreenBits</title>
+  <meta name="description" content="Publicá tu lote de producto de segunda o biomasa en cuatro pasos.">
+  <link rel="icon" href="assets/img/favicon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bree+Serif&family=Cormorant+Garamond:ital,wght@0,500;1,500;1,600&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,800;0,9..144,900;1,9..144,500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/pages/publish.css">
+</head>
+<body data-page="publish">
+
+  <div data-layout="header" data-variant="solid"></div>
+
+  <main class="publish">
+    <div class="container publish__grid">
+
+      <!-- ===== Wizard ===== -->
+      <section class="wizard" aria-labelledby="wizard-title">
+        <header class="wizard__head">
+          <span class="eyebrow">Para productores</span>
+          <h1 id="wizard-title">Publicá tu lote en <em>4 toques</em></h1>
+          <p class="section-lead">Lo que no te recibió el mayorista todavía tiene comprador. Contanos qué tenés y lo ponemos frente a sodas, reposterías y fincas de la zona.</p>
+
+          <ol class="progress" data-progress>
+            <li class="is-active"><span>1</span> Qué</li>
+            <li><span>2</span> Cuánto</li>
+            <li><span>3</span> Precio y zona</li>
+            <li><span>4</span> Publicar</li>
+          </ol>
+        </header>
+
+        <form class="wizard__form" novalidate data-wizard>
+          <!-- STEP 1: category + product -->
+          <fieldset class="step is-active" data-step="1">
+            <legend class="step__title">¿Qué tenés para vender?</legend>
+            <div class="category-pick" data-category-pick>
+              <label class="category-option">
+                <input type="radio" name="category" value="segunda" checked>
+                <span class="category-option__box">
+                  <i class="i" data-icon="basket"></i>
+                  <strong>Producto de segunda</strong>
+                  <small>Fruta y verdura fuera del estándar</small>
+                </span>
+              </label>
+              <label class="category-option">
+                <input type="radio" name="category" value="biomasa">
+                <span class="category-option__box">
+                  <i class="i" data-icon="recycle"></i>
+                  <strong>Biomasa</strong>
+                  <small>Cáscaras, bagazo, hojas y podas</small>
+                </span>
+              </label>
+            </div>
+            <p class="field__label" style="margin-top:22px">Elegí el producto</p>
+            <div class="product-pick" data-product-pick></div>
+            <p class="field__error" data-error="product">Elegí un producto para continuar.</p>
+          </fieldset>
+
+          <!-- STEP 2: quantity -->
+          <fieldset class="step" data-step="2">
+            <legend class="step__title">¿Cuánto tenés disponible?</legend>
+            <div class="qty-row">
+              <label class="field qty-field">
+                <span class="field__label">Cantidad</span>
+                <div class="qty-input">
+                  <input class="input" type="number" name="qty" min="1" step="1" placeholder="Ej. 120" inputmode="numeric">
+                  <span data-unit-label>kg</span>
+                </div>
+                <span class="field__error">Ingresá una cantidad mayor a 0.</span>
+              </label>
+              <div class="presets" data-presets>
+                <button type="button" class="chip" data-preset="50">50</button>
+                <button type="button" class="chip" data-preset="100">100</button>
+                <button type="button" class="chip" data-preset="250">250</button>
+                <button type="button" class="chip" data-preset="500">500</button>
+              </div>
+            </div>
+            <label class="field">
+              <span class="field__label">Título del lote</span>
+              <input class="input" type="text" name="title" maxlength="48" placeholder="Ej. Tomate de segunda">
+              <span class="field__hint">Lo sugerimos automáticamente; podés cambiarlo.</span>
+            </label>
+            <label class="field">
+              <span class="field__label">¿Por qué es de segunda o cómo está? <span style="font-weight:400">(opcional)</span></span>
+              <textarea class="textarea" name="note" maxlength="160" placeholder="Ej. Tomate maduro con detalles de forma, ideal para salsa."></textarea>
+            </label>
+          </fieldset>
+
+          <!-- STEP 3: price + zone -->
+          <fieldset class="step" data-step="3">
+            <legend class="step__title">¿A qué precio y dónde se retira?</legend>
+            <label class="field">
+              <span class="field__label">Precio por <span data-unit-label>kg</span> (colones)</span>
+              <div class="price-input"><span>₡</span><input class="input" type="number" name="price" min="1" step="5" placeholder="350" inputmode="numeric"></div>
+              <span class="field__error">Ingresá un precio válido.</span>
+              <span class="price-hint" data-price-hint></span>
+            </label>
+            <label class="field">
+              <span class="field__label">Zona</span>
+              <select class="select" name="zone" data-zone-select></select>
+            </label>
+            <label class="switch-row">
+              <input type="checkbox" name="delivery">
+              <span class="switch-row__track"></span>
+              <span><strong>Puedo entregar</strong><br><small>Si no, el comprador retira en la finca.</small></span>
+            </label>
+          </fieldset>
+
+          <!-- STEP 4: contact + photo + publish -->
+          <fieldset class="step" data-step="4">
+            <legend class="step__title">Últimos detalles</legend>
+            <div class="two-cols">
+              <label class="field">
+                <span class="field__label">Tu nombre o el de la finca</span>
+                <input class="input" type="text" name="producer" maxlength="40" placeholder="Ej. Finca Los Laureles">
+                <span class="field__error">¿Cómo te llamás?</span>
+              </label>
+              <label class="field">
+                <span class="field__label">WhatsApp</span>
+                <input class="input" type="tel" name="phone" maxlength="9" placeholder="8888-1234" inputmode="numeric">
+                <span class="field__error">Número de 8 dígitos.</span>
+              </label>
+            </div>
+            <label class="photo-drop" data-photo-drop>
+              <input type="file" accept="image/*" name="photo" hidden>
+              <span class="photo-drop__empty" data-photo-empty>
+                <i class="i" data-icon="upload"></i>
+                <strong>Agregá una foto (opcional)</strong>
+                <small>Si no subís una, usamos una ilustración del producto.</small>
+              </span>
+              <img alt="Vista previa de la foto" data-photo-preview hidden>
+            </label>
+            <p class="field__hint">Al publicar aceptás que los compradores te contacten por WhatsApp. (Demo: no se envía nada.)</p>
+          </fieldset>
+
+          <div class="wizard__nav">
+            <button class="btn btn--ghost" type="button" data-prev><i class="i" data-icon="arrowLeft"></i> Atrás</button>
+            <button class="btn btn--primary" type="button" data-next>Siguiente <i class="i" data-icon="arrowRight"></i></button>
+            <button class="btn btn--accent" type="submit" data-submit hidden><i class="i" data-icon="sprout"></i> Publicar lote</button>
+          </div>
+        </form>
+
+        <!-- Success screen (shown after publishing) -->
+        <div class="publish-success" data-success hidden></div>
+      </section>
+
+      <!-- ===== Live preview ===== -->
+      <aside class="preview" aria-label="Vista previa">
+        <p class="preview__label"><span class="preview__dot"></span> Así lo verán los compradores</p>
+        <div class="preview__card" data-preview></div>
+        <div class="tips">
+          <h2>Consejos para vender rápido</h2>
+          <ul>
+            <li><i class="i" data-icon="check"></i> Un precio 30–50 % menor al de primera atrae más reservas.</li>
+            <li><i class="i" data-icon="check"></i> Contá el uso ideal: “perfecto para salsa”, “ideal para compost”.</li>
+            <li><i class="i" data-icon="check"></i> Respondé por WhatsApp en menos de una hora.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <div data-layout="footer"></div>
+
+  <script src="assets/js/core/utils.js"></script>
+  <script src="assets/js/data/lots.js"></script>
+  <script src="assets/js/core/store.js"></script>
+  <script src="assets/js/components/illustrations.js"></script>
+  <script src="assets/js/components/ui.js"></script>
+  <script src="assets/js/components/lot-card.js"></script>
+  <script src="assets/js/components/lot-detail.js"></script>
+  <script src="assets/js/components/layout.js"></script>
+  <script src="assets/js/components/reveal.js"></script>
+  <script src="assets/js/pages/publish.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
