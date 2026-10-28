@@ -47,6 +47,7 @@ window.GB = window.GB || {};
           </p>
           <h2 class="lot-detail__title">${escapeHtml(lot.title)}</h2>
           <p class="lot-detail__note">${escapeHtml(lot.note)}</p>
+          ${GB.speech.isSupported() ? `<button class="btn btn--ghost btn--sm lot-detail__listen" type="button" data-listen-lot>${icon("volume")} Escuchar este lote</button>` : ""}
 
           <dl class="lot-detail__facts">
             <div><dt>Disponible</dt><dd>${formatNumber(lot.qty)} ${product.unit}</dd></div>
@@ -117,11 +118,30 @@ window.GB = window.GB || {};
       </div>
     </div>`;
 
+  /** Text read by "Escuchar este lote" (prices/units are made speakable by GB.speech) */
+  const spokenSummary = (lot) => {
+    const product = GB.lotCard.productOf(lot);
+    return [
+      `${lot.title}.`,
+      `Productor: ${lot.producer}.`,
+      `Disponible: ${formatNumber(lot.qty)} ${product.unit}.`,
+      `Precio: ${formatCRC(lot.price)}/${product.unit}.`,
+      `Zona: ${lot.zone}.`,
+      lot.uses.length ? `Usos sugeridos: ${lot.uses.join(", ")}.` : "",
+      lot.soldOut ? "Este lote ya fue reservado por completo." : "",
+    ].join(" ");
+  };
+
   // ---------- Behaviour ----------
   const open = (lotId) => {
     const lot = GB.store.getLotById(lotId);
     if (!lot) return;
     const content = GB.ui.openModal(detailTemplate(lot), lot.title);
+
+    const listenBtn = $("[data-listen-lot]", content);
+    if (listenBtn) {
+      listenBtn.addEventListener("click", () => GB.speech.speak(spokenSummary(lot), $(".lot-detail__info", content), "modal"));
+    }
 
     const alertBtn = $("[data-alert]", content);
     if (alertBtn) {

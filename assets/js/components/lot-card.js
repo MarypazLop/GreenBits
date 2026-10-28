@@ -34,7 +34,7 @@ window.GB = window.GB || {};
           <span class="lot-card__tag ${category === "biomasa" ? "lot-card__tag--biomasa" : ""}">
             ${GB.data.categories[category].short}
           </span>
-          ${lot.soldOut ? '<span class="lot-card__new" style="background:#455048">AGOTADO</span>' : isNew ? '<span class="lot-card__new">NUEVO</span>' : ""}
+          ${lot.soldOut ? '<span class="lot-card__new lot-card__new--soldout">AGOTADO</span>' : isNew ? '<span class="lot-card__new">NUEVO</span>' : ""}
         </div>
         <div class="lot-card__body">
           <h3 class="lot-card__title">${escapeHtml(lot.title)}</h3>
@@ -42,8 +42,8 @@ window.GB = window.GB || {};
             <span>${icon("scale")} ${formatNumber(lot.qty)} ${product.unit}</span>
             <span>${icon("pin")} ${escapeHtml(lot.zone)}</span>
             <span>${icon("clock")} ${timeAgo(lot.createdAt)}</span>
+            <span>${icon("user")} ${escapeHtml(lot.producer)}</span>
           </div>
-          <div class="lot-card__meta"><span>${icon("user")} ${escapeHtml(lot.producer)}</span></div>
           <div class="lot-card__footer">
             <p class="lot-card__price">${formatCRC(lot.price)}<small>/${product.unit}</small></p>
             <span class="lot-card__cta">${icon("arrowRight")}</span>

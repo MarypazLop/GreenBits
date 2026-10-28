@@ -3,6 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+
+  <!-- Accessibility prefs (gb.a11y) applied before the first paint to avoid a flash
+       of the wrong theme/size. Keep the class names in sync with components/a11y.js -->
+  <script>
+    (function () {
+      var root = document.documentElement, prefs = {};
+      try { prefs = JSON.parse(localStorage.getItem("gb.a11y")) || {}; } catch (e) { /* storage blocked */ }
+      if (prefs.theme === "light" || prefs.theme === "dark") root.setAttribute("data-theme", prefs.theme);
+      if (prefs.fontScale && prefs.fontScale !== 100) root.style.fontSize = prefs.fontScale + "%";
+      var reduce = typeof prefs.reduceMotion === "boolean" ? prefs.reduceMotion : matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (reduce) root.classList.add("reduce-motion");
+      var flags = { contrast: "a11y-contrast", readableFont: "a11y-readable-font", underlineLinks: "a11y-underline-links", textSpacing: "a11y-text-spacing", bigCursor: "a11y-big-cursor" };
+      for (var key in flags) if (prefs[key]) root.classList.add(flags[key]);
+    })();
+  </script>
   <title>GreenBits · Lo que sobra, brota</title>
   <meta name="description" content="GreenBits conecta a productores de San Carlos con compradores locales para darle salida a los productos de segunda y a la biomasa.">
   <link rel="icon" href="assets/img/favicon.png">
@@ -15,13 +31,14 @@
   <link rel="stylesheet" href="assets/css/base.css">
   <link rel="stylesheet" href="assets/css/components.css">
   <link rel="stylesheet" href="assets/css/pages/home.css">
+  <link rel="stylesheet" href="assets/css/a11y.css">
 </head>
 <body data-page="home">
 
   <!-- Shared navbar is injected here by layout.js -->
   <div data-layout="header" data-variant="transparent"></div>
 
-  <main>
+  <main id="contenido" tabindex="-1">
     <!-- =============================================================
          HERO — split layout: blurred panel on the left, big title
          whose letters "cut through" the panel to show the pattern.
@@ -47,26 +64,32 @@
       </div>
       <h1 class="visually-hidden" data-hero-a11y>Lo que sobra, brota</h1>
 
-      <div class="hero__content container">
-        <p class="hero__text" data-hero-text>
-          GreenBits conecta a productores de San Carlos con compradores locales para darle salida
-          a los productos de segunda y a la biomasa que hoy se bota.
-        </p>
-        <div class="hero__ctas">
-          <a class="btn btn--accent" href="catalogo.html" data-hero-cta>Explorar lotes</a>
-          <a class="hero__link" href="publicar.html">Soy productor: publicar un lote →</a>
+      <!-- Bottom row: slide text on the left, featured card + controls on the right -->
+      <div class="hero__bottom">
+        <div class="hero__content" data-hero-content>
+          <p class="hero__text" data-hero-text>
+            GreenBits conecta a productores de San Carlos con compradores locales para darle salida
+            a los productos de segunda y a la biomasa que hoy se bota.
+          </p>
+          <div class="hero__ctas">
+            <a class="btn btn--accent" href="catalogo.html" data-hero-cta>Explorar lotes</a>
+            <a class="hero__link" href="publicar.html">Soy productor: publicar un lote →</a>
+          </div>
+        </div>
+
+        <div class="hero__controls">
+          <!-- Featured lot card (changes with each slide) -->
+          <button class="hero__card" type="button" data-hero-card aria-label="Ver lote destacado"></button>
+          <div class="hero__arrows">
+            <button class="hero__arrow hero__pause" type="button" data-hero-pause aria-label="Pausar carrusel"></button>
+            <button class="hero__arrow" type="button" data-hero-prev aria-label="Anterior"></button>
+            <button class="hero__arrow hero__arrow--next" type="button" data-hero-next aria-label="Siguiente"></button>
+          </div>
         </div>
       </div>
 
-      <!-- Featured lot floating card (changes with each slide) -->
-      <button class="hero__card" type="button" data-hero-card aria-label="Ver lote destacado"></button>
-
-      <!-- Slide controls -->
-      <div class="hero__dots" role="tablist" aria-label="Diapositivas" data-hero-dots></div>
-      <div class="hero__arrows">
-        <button class="hero__arrow" type="button" data-hero-prev aria-label="Anterior"></button>
-        <button class="hero__arrow hero__arrow--next" type="button" data-hero-next aria-label="Siguiente"></button>
-      </div>
+      <!-- Slide indicator -->
+      <div class="hero__dots" role="group" aria-label="Diapositivas" data-hero-dots></div>
     </section>
 
     <!-- =============================================================
@@ -83,9 +106,10 @@
           </p>
           <form class="join-form" data-join-form novalidate>
             <label class="visually-hidden" for="join-phone">Número de WhatsApp</label>
-            <input class="input" id="join-phone" type="tel" placeholder="Tu WhatsApp (8 dígitos)" inputmode="numeric" maxlength="9">
+            <input class="input" id="join-phone" type="tel" placeholder="Tu WhatsApp (8 dígitos)" inputmode="numeric" maxlength="9" autocomplete="tel-national">
             <button class="btn btn--primary" type="submit">Recibir alertas</button>
           </form>
+          <p class="join-form__error" id="join-error" data-join-error hidden>Ingresá un número de 8 dígitos (ej. 8888 1234).</p>
           <div class="join-proof">
             <div class="avatars" aria-hidden="true"><span>ES</span><span>MV</span><span>AJ</span><span>+</span></div>
             <p>Más de <strong>120 productores</strong> de San Carlos ya publican sus lotes.</p>
@@ -244,6 +268,8 @@
   <script src="assets/js/core/store.js"></script>
   <script src="assets/js/components/illustrations.js"></script>
   <script src="assets/js/components/ui.js"></script>
+  <script src="assets/js/components/a11y.js"></script>
+  <script src="assets/js/components/speech.js"></script>
   <script src="assets/js/components/lot-card.js"></script>
   <script src="assets/js/components/lot-detail.js"></script>
   <script src="assets/js/components/layout.js"></script>

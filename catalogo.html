@@ -3,6 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+
+  <!-- Accessibility prefs (gb.a11y) applied before the first paint to avoid a flash
+       of the wrong theme/size. Keep the class names in sync with components/a11y.js -->
+  <script>
+    (function () {
+      var root = document.documentElement, prefs = {};
+      try { prefs = JSON.parse(localStorage.getItem("gb.a11y")) || {}; } catch (e) { /* storage blocked */ }
+      if (prefs.theme === "light" || prefs.theme === "dark") root.setAttribute("data-theme", prefs.theme);
+      if (prefs.fontScale && prefs.fontScale !== 100) root.style.fontSize = prefs.fontScale + "%";
+      var reduce = typeof prefs.reduceMotion === "boolean" ? prefs.reduceMotion : matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (reduce) root.classList.add("reduce-motion");
+      var flags = { contrast: "a11y-contrast", readableFont: "a11y-readable-font", underlineLinks: "a11y-underline-links", textSpacing: "a11y-text-spacing", bigCursor: "a11y-big-cursor" };
+      for (var key in flags) if (prefs[key]) root.classList.add(flags[key]);
+    })();
+  </script>
   <title>Catálogo de lotes · GreenBits</title>
   <meta name="description" content="Explorá lotes de productos de segunda y biomasa publicados por productores de San Carlos.">
   <link rel="icon" href="assets/img/favicon.png">
@@ -14,12 +30,13 @@
   <link rel="stylesheet" href="assets/css/base.css">
   <link rel="stylesheet" href="assets/css/components.css">
   <link rel="stylesheet" href="assets/css/pages/catalog.css">
+  <link rel="stylesheet" href="assets/css/a11y.css">
 </head>
 <body data-page="catalog">
 
   <div data-layout="header" data-variant="solid"></div>
 
-  <main>
+  <main id="contenido" tabindex="-1">
     <!-- ===== Page header with search ===== -->
     <section class="catalog-hero">
       <div class="container catalog-hero__inner">
@@ -78,7 +95,7 @@
 
       <div class="results">
         <div class="results__toolbar">
-          <button class="btn btn--ghost btn--sm results__filters-btn" type="button" data-open-filters aria-controls="filters">
+          <button class="btn btn--ghost btn--sm results__filters-btn" type="button" data-open-filters aria-controls="filters" aria-expanded="false">
             <i class="i" data-icon="filter"></i> Filtros
           </button>
           <p class="results__count" aria-live="polite" data-results-count></p>
@@ -117,6 +134,8 @@
   <script src="assets/js/core/store.js"></script>
   <script src="assets/js/components/illustrations.js"></script>
   <script src="assets/js/components/ui.js"></script>
+  <script src="assets/js/components/a11y.js"></script>
+  <script src="assets/js/components/speech.js"></script>
   <script src="assets/js/components/lot-card.js"></script>
   <script src="assets/js/components/lot-detail.js"></script>
   <script src="assets/js/components/layout.js"></script>

@@ -62,6 +62,7 @@ GreenBits/
     ├── css/
     │   ├── base.css          # Paleta, tipografías, reset, utilidades
     │   ├── components.css    # Botones, navbar, tarjetas, modal, formularios, footer
+    │   ├── a11y.css          # Panel de accesibilidad y modos (alto contraste, etc.)
     │   └── pages/            # Estilos propios de cada página
     ├── img/                  # Logos, isotipos y patrón de la marca
     └── js/
@@ -92,6 +93,21 @@ GreenBits/
 - Paleta: verde `#034e2f`, naranja `#d07e42`, verde claro `#07945a`, salvia `#c2bb87`, crema `#f8f7f3`, café `#853800`, carbón `#2e332f`.
 - Tipografías: **Fraunces** (títulos y productos), **DM Sans** (interfaz y texto), **Cormorant Garamond** (slogan y citas), **Bree Serif** (etiquetas).
 - Las imágenes de producto son ilustraciones SVG (`components/illustrations.js`). Si un lote tiene `photo`, la tarjeta muestra la foto.
+
+## Accesibilidad
+
+El botón flotante de abajo a la izquierda abre el **panel de accesibilidad**, disponible en las tres páginas:
+
+- **Tema:** Claro / Oscuro / Sistema (también con el botón sol/luna del menú).
+- **Tamaño de texto:** de 90 % a 175 %.
+- **Leer en voz alta** (Web Speech API): leer la página o la selección, pausar, detener, elegir la voz y la velocidad (0.5×–2×), y leer al enfocar. En el detalle de cada lote está el botón "Escuchar este lote".
+- **Otras opciones:** reducir animaciones (por defecto sigue la configuración del sistema), alto contraste, fuente legible, subrayar enlaces, espaciado de texto ampliado y cursor grande.
+
+Las preferencias se guardan en `localStorage` (`gb.a11y`) y se aplican antes de pintar la página. El sitio apunta a **WCAG 2.2 AA**: enlace "Saltar al contenido", foco visible, navegación completa por teclado y botón para pausar el carrusel.
+
+## Contexto para IA
+
+`CLAUDE.md` y [`docs/AI_CONTEXT.md`](docs/AI_CONTEXT.md) reúnen las reglas de trabajo, la arquitectura, la identidad visual y el registro de decisiones del proyecto. Si trabajás con un asistente de IA, que los lea antes de cambiar algo y que actualice el registro al terminar.
 
 ## Próximos pasos (cuando haya backend)
 Reemplazar las funciones de `assets/js/core/store.js` por llamadas `fetch` a la API; el resto del front no necesita cambiar.

@@ -10,7 +10,9 @@ window.GB = window.GB || {};
 
 (function (GB) {
   "use strict";
-  const { $, $$, icon, escapeHtml, formatCRC, formatNumber } = GB.utils;
+  const { $, $$, icon, escapeHtml, formatCRC, formatNumber, trapFocus } = GB.utils;
+
+  const COMPACT_MAX_WIDTH = 900; // px: below this the menu is always off-canvas
 
   const NAV_LINKS = [
     { href: "index.html", label: "Inicio", page: "home" },
@@ -21,23 +23,32 @@ window.GB = window.GB || {};
   ];
 
   // ---------- Templates ----------
+  /** Light wordmark on the hero; on solid bars it follows the theme (see .only-dark in base.css) */
+  const logoTemplate = (variant) =>
+    variant === "transparent"
+      ? '<img src="assets/img/logo-wordmark-light.png" alt="GreenBits" data-logo>'
+      : `<img class="only-light" src="assets/img/logo-wordmark.png" alt="GreenBits" data-logo>
+         <img class="only-dark" src="assets/img/logo-wordmark-light.png" alt="GreenBits">`;
+
   const headerTemplate = (variant, currentPage) => {
-    const logo = variant === "transparent" ? "logo-wordmark-light.png" : "logo-wordmark.png";
-    const links = NAV_LINKS.map(
-      (l) => `<a class="navbar__link ${l.page === currentPage ? "is-active" : ""}" href="${l.href}">${l.label}</a>`
-    ).join("");
+    const links = NAV_LINKS.map((l) => {
+      const active = l.page === currentPage;
+      return `<a class="navbar__link ${active ? "is-active" : ""}" href="${l.href}"${active ? ' aria-current="page"' : ""}>${l.label}</a>`;
+    }).join("");
 
     return `
+      <a class="skip-link" href="#contenido">Saltar al contenido</a>
       <div class="demo-banner">
         <strong>Prototipo de demostración</strong><span class="demo-banner__extra"> · Los lotes, nombres y precios son de ejemplo.</span>
       </div>
       <nav class="navbar navbar--${variant}" aria-label="Principal">
         <div class="container navbar__inner">
           <a class="navbar__logo" href="index.html" aria-label="GreenBits, inicio">
-            <img src="assets/img/${logo}" alt="GreenBits" data-logo>
+            ${logoTemplate(variant)}
           </a>
           <div class="navbar__links" id="nav-links">${links}</div>
           <div class="navbar__actions">
+            <button class="icon-btn navbar__theme" type="button" data-theme-toggle aria-label="Modo oscuro" aria-pressed="false">${icon("moon")}</button>
             <button class="icon-btn navbar__cart" type="button" data-open-reservations aria-label="Mis reservas">
               ${icon("basket")}<span class="navbar__badge" data-res-count hidden>0</span>
             </button>
@@ -133,8 +144,11 @@ window.GB = window.GB || {};
       : `<div class="drawer__empty">${GB.illustrations.render("leaf")}<p>Todavía no tenés reservas. Explorá el catálogo y apartá tu primer lote.</p><br><a class="btn btn--primary btn--sm" href="catalogo.html">Ir al catálogo</a></div>`;
   };
 
+  let drawerOpener = null;
+
   const openReservations = () => {
     const drawer = $("[data-drawer]");
+    drawerOpener = document.activeElement;
     renderReservations();
     drawer.hidden = false;
     document.body.style.overflow = "hidden";
@@ -144,6 +158,7 @@ window.GB = window.GB || {};
   const closeReservations = () => {
     $("[data-drawer]").hidden = true;
     document.body.style.overflow = "";
+    if (drawerOpener && document.body.contains(drawerOpener)) drawerOpener.focus();
   };
 
   /** Transparent navbar turns solid after scrolling past the top */
@@ -156,14 +171,38 @@ window.GB = window.GB || {};
 
   const bindMobileMenu = (navbar) => {
     const toggle = $(".navbar__toggle", navbar);
-    toggle.addEventListener("click", () => {
-      const open = navbar.classList.toggle("is-open");
+    const setOpen = (open) => {
+      navbar.classList.toggle("is-open", open);
       toggle.setAttribute("aria-expanded", open);
+      toggle.setAttribute("aria-label", open ? "Cerrar menú" : "Abrir menú");
       toggle.innerHTML = icon(open ? "close" : "menu");
+    };
+    toggle.addEventListener("click", () => setOpen(!navbar.classList.contains("is-open")));
+    $$(".navbar__link", navbar).forEach((link) => link.addEventListener("click", () => setOpen(false)));
+    document.addEventListener("keydown", (e) => {
+      if (e.key !== "Escape" || !navbar.classList.contains("is-open")) return;
+      setOpen(false);
+      toggle.focus();
     });
-    $$(".navbar__link", navbar).forEach((link) =>
-      link.addEventListener("click", () => navbar.classList.remove("is-open"))
-    );
+    return setOpen;
+  };
+
+  /** Off-canvas menu on small screens or whenever the links don't fit
+      (e.g. with a large text size from the a11y panel) */
+  const bindCompactMode = (navbar, setOpen) => {
+    const inner = $(".navbar__inner", navbar);
+    const check = () => {
+      navbar.classList.remove("is-compact");
+      const compact = window.innerWidth <= COMPACT_MAX_WIDTH || inner.scrollWidth > inner.clientWidth;
+      navbar.classList.toggle("is-compact", compact);
+      if (!compact) setOpen(false);
+    };
+    window.addEventListener("resize", check);
+    window.addEventListener("load", check);
+    if (GB.a11y) GB.a11y.onChange(check);
+    if (document.fonts) document.fonts.ready.then(check); // web fonts change the link widths
+    $$(".navbar__logo img", navbar).forEach((img) => img.addEventListener("load", check)); // width is 0 until loaded
+    check();
   };
 
   const init = () => {
@@ -177,7 +216,7 @@ window.GB = window.GB || {};
 
     const navbar = $(".navbar");
     bindScroll(navbar);
-    bindMobileMenu(navbar);
+    bindCompactMode(navbar, bindMobileMenu(navbar));
 
     document.addEventListener("click", (e) => {
       if (e.target.closest("[data-open-reservations]")) openReservations();
@@ -188,7 +227,10 @@ window.GB = window.GB || {};
       }
     });
     document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && !$("[data-drawer]").hidden) closeReservations();
+      const drawer = $("[data-drawer]");
+      if (drawer.hidden) return;
+      if (e.key === "Escape") closeReservations();
+      trapFocus(e, drawer);
     });
 
     GB.store.subscribe(renderReservations);

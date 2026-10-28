@@ -41,14 +41,18 @@ GB.pages = GB.pages || {};
     const ctaEl = $("[data-hero-cta]", hero);
     const cardEl = $("[data-hero-card]", hero);
     const dotsEl = $("[data-hero-dots]", hero);
+    const pauseBtn = $("[data-hero-pause]", hero);
+    const contentEl = $("[data-hero-content]", hero);
     let current = 0;
     let timer;
+    let paused = GB.a11y.prefersReducedMotion(); // no autoplay with reduced motion
+    let interacting = false;                     // pointer or keyboard focus inside the hero
 
     $("[data-hero-prev]", hero).innerHTML = icon("arrowLeft");
     $("[data-hero-next]", hero).innerHTML = icon("arrowRight");
 
     dotsEl.innerHTML = SLIDES.map(
-      (_, i) => `<button class="hero__dot" type="button" role="tab" aria-label="Diapositiva ${i + 1}" data-index="${i}"></button>`
+      (_, i) => `<button class="hero__dot" type="button" aria-label="Diapositiva ${i + 1} de ${SLIDES.length}" data-index="${i}"></button>`
     ).join("");
 
     /** Restarts a CSS animation by toggling the class */
@@ -61,6 +65,7 @@ GB.pages = GB.pages || {};
     const renderCard = (lot) => {
       const product = GB.lotCard.productOf(lot);
       cardEl.dataset.lotId = lot.id;
+      cardEl.setAttribute("aria-label", `Ver lote destacado: ${lot.title}`);
       cardEl.innerHTML = `
         <span class="hero__card-media tone-${product.tone}">${GB.illustrations.render(product.art)}</span>
         <span>
@@ -87,7 +92,8 @@ GB.pages = GB.pages || {};
 
       $$(".hero__dot", dotsEl).forEach((dot, i) => {
         dot.classList.toggle("is-active", i === current);
-        dot.setAttribute("aria-selected", i === current);
+        if (i === current) dot.setAttribute("aria-current", "true");
+        else dot.removeAttribute("aria-current");
       });
 
       [titleWrap, textEl, cardEl].forEach((el) => replay(el));
@@ -95,23 +101,43 @@ GB.pages = GB.pages || {};
 
     const restartAutoplay = () => {
       clearInterval(timer);
-      timer = setInterval(() => goTo(current + 1), AUTOPLAY_MS);
+      if (!paused && !interacting) timer = setInterval(() => goTo(current + 1), AUTOPLAY_MS);
+    };
+
+    /** Visible pause/play control (WCAG 2.2.2). Slide changes are announced only while paused. */
+    const setPaused = (value) => {
+      paused = value;
+      pauseBtn.innerHTML = icon(paused ? "play" : "pause");
+      pauseBtn.setAttribute("aria-label", paused ? "Reanudar carrusel" : "Pausar carrusel");
+      contentEl.setAttribute("aria-live", paused ? "polite" : "off");
+      restartAutoplay();
+    };
+
+    const setInteracting = (value) => {
+      interacting = value;
+      restartAutoplay();
     };
 
     $("[data-hero-prev]", hero).addEventListener("click", () => { goTo(current - 1); restartAutoplay(); });
     $("[data-hero-next]", hero).addEventListener("click", () => { goTo(current + 1); restartAutoplay(); });
+    pauseBtn.addEventListener("click", () => setPaused(!paused));
     dotsEl.addEventListener("click", (e) => {
       const dot = e.target.closest("[data-index]");
       if (dot) { goTo(Number(dot.dataset.index)); restartAutoplay(); }
     });
     cardEl.addEventListener("click", () => GB.lotDetail.open(cardEl.dataset.lotId));
 
-    // Pause while the user interacts with the hero
-    hero.addEventListener("mouseenter", () => clearInterval(timer));
-    hero.addEventListener("mouseleave", restartAutoplay);
+    // Pause while the user interacts with the hero (mouse or keyboard)
+    hero.addEventListener("mouseenter", () => setInteracting(true));
+    hero.addEventListener("mouseleave", () => setInteracting(hero.contains(document.activeElement)));
+    hero.addEventListener("focusin", () => setInteracting(true));
+    hero.addEventListener("focusout", (e) => !hero.contains(e.relatedTarget) && setInteracting(hero.matches(":hover")));
+
+    // Turning "Reducir animaciones" on stops the autoplay right away
+    GB.a11y.onChange(() => GB.a11y.prefersReducedMotion() && !paused && setPaused(true));
 
     goTo(0);
-    restartAutoplay();
+    setPaused(paused);
   };
 
   // ---------- Impact numbers ----------
@@ -152,7 +178,8 @@ GB.pages = GB.pages || {};
 
     const scrollByCard = (direction) => {
       const card = track.querySelector(".lot-card");
-      track.scrollBy({ left: direction * (card.offsetWidth + 16), behavior: "smooth" });
+      const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
+      track.scrollBy({ left: direction * (card.offsetWidth + gap), behavior: GB.a11y.scrollBehavior() });
     };
     $("[data-featured-prev]").addEventListener("click", () => scrollByCard(-1));
     $("[data-featured-next]").addEventListener("click", () => scrollByCard(1));
@@ -162,12 +189,19 @@ GB.pages = GB.pages || {};
   const initForms = () => {
     // WhatsApp alerts sign-up
     const joinForm = $("[data-join-form]");
+    const joinError = $("[data-join-error]");
+    const joinInput = joinForm.querySelector("input");
+    const setJoinError = (invalid) => {
+      joinError.hidden = !invalid;
+      GB.utils.setInvalid(joinInput, joinError, invalid);
+    };
+    joinInput.addEventListener("input", () => setJoinError(false));
     joinForm.addEventListener("submit", (e) => {
       e.preventDefault();
-      const input = joinForm.querySelector("input");
+      const input = joinInput;
       const digits = input.value.replace(/\D/g, "");
+      setJoinError(digits.length !== 8);
       if (digits.length !== 8) {
-        GB.ui.toast("Ingresá un número de 8 dígitos (ej. 8888 1234).", "info");
         input.focus();
         return;
       }

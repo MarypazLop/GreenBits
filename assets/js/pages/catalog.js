@@ -112,8 +112,10 @@ GB.pages = GB.pages || {};
     const results = getResults();
     const grid = $("[data-results]");
     grid.innerHTML = results.map(GB.lotCard.render).join("");
-    // Small stagger so cards appear one after another
-    $$(".lot-card", grid).forEach((card, i) => (card.style.animationDelay = `${Math.min(i, 8) * 40}ms`));
+    // Small stagger so cards appear one after another (none with reduced motion)
+    if (!GB.a11y.prefersReducedMotion()) {
+      $$(".lot-card", grid).forEach((card, i) => (card.style.animationDelay = `${Math.min(i, 8) * 40}ms`));
+    }
 
     $("[data-results-count]").innerHTML = `<strong>${results.length}</strong> ${results.length === 1 ? "lote disponible" : "lotes disponibles"}`;
     $("[data-empty]").hidden = results.length > 0;
@@ -213,9 +215,19 @@ GB.pages = GB.pages || {};
       })
     );
 
-    // Mobile off-canvas filters
-    $("[data-open-filters]").addEventListener("click", () => filters.classList.add("is-open"));
-    $$("[data-close-filters]").forEach((btn) => btn.addEventListener("click", () => filters.classList.remove("is-open")));
+    // Mobile off-canvas filters (focus moves in on open and back on close)
+    const openFiltersBtn = $("[data-open-filters]");
+    const setFiltersOpen = (open) => {
+      filters.classList.toggle("is-open", open);
+      openFiltersBtn.setAttribute("aria-expanded", open);
+      if (open) $(".filters__close", filters).focus();
+      else openFiltersBtn.focus();
+    };
+    openFiltersBtn.addEventListener("click", () => setFiltersOpen(true));
+    $$("[data-close-filters]").forEach((btn) => btn.addEventListener("click", () => setFiltersOpen(false)));
+    filters.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && filters.classList.contains("is-open")) setFiltersOpen(false);
+    });
 
     $("[data-empty-alert]").addEventListener("click", () =>
       GB.ui.toast("Alerta creada: te avisamos cuando haya lotes con estos filtros (simulado).", "clock")

@@ -5,7 +5,7 @@ window.GB = window.GB || {};
 
 (function (GB) {
   "use strict";
-  const { icon } = GB.utils;
+  const { icon, trapFocus } = GB.utils;
 
   // ---------- Toasts ----------
   let stack;
@@ -49,7 +49,9 @@ window.GB = window.GB || {};
       if (e.target.closest("[data-close]")) closeModal();
     });
     document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && !modalEl.hidden) closeModal();
+      if (modalEl.hidden) return;
+      if (e.key === "Escape") closeModal();
+      trapFocus(e, modalEl.querySelector(".modal__dialog"));
     });
     return modalEl;
   };
@@ -68,9 +70,10 @@ window.GB = window.GB || {};
   };
 
   const closeModal = () => {
-    if (!modalEl) return;
+    if (!modalEl || modalEl.hidden) return;
     modalEl.hidden = true;
     document.body.style.overflow = "";
+    document.dispatchEvent(new CustomEvent("gb:modal-close")); // e.g. stops the speech reader
     if (lastFocused) lastFocused.focus();
   };
 

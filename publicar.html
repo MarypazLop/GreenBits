@@ -3,6 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+
+  <!-- Accessibility prefs (gb.a11y) applied before the first paint to avoid a flash
+       of the wrong theme/size. Keep the class names in sync with components/a11y.js -->
+  <script>
+    (function () {
+      var root = document.documentElement, prefs = {};
+      try { prefs = JSON.parse(localStorage.getItem("gb.a11y")) || {}; } catch (e) { /* storage blocked */ }
+      if (prefs.theme === "light" || prefs.theme === "dark") root.setAttribute("data-theme", prefs.theme);
+      if (prefs.fontScale && prefs.fontScale !== 100) root.style.fontSize = prefs.fontScale + "%";
+      var reduce = typeof prefs.reduceMotion === "boolean" ? prefs.reduceMotion : matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (reduce) root.classList.add("reduce-motion");
+      var flags = { contrast: "a11y-contrast", readableFont: "a11y-readable-font", underlineLinks: "a11y-underline-links", textSpacing: "a11y-text-spacing", bigCursor: "a11y-big-cursor" };
+      for (var key in flags) if (prefs[key]) root.classList.add(flags[key]);
+    })();
+  </script>
   <title>Publicar un lote · GreenBits</title>
   <meta name="description" content="Publicá tu lote de producto de segunda o biomasa en cuatro pasos.">
   <link rel="icon" href="assets/img/favicon.png">
@@ -14,12 +30,13 @@
   <link rel="stylesheet" href="assets/css/base.css">
   <link rel="stylesheet" href="assets/css/components.css">
   <link rel="stylesheet" href="assets/css/pages/publish.css">
+  <link rel="stylesheet" href="assets/css/a11y.css">
 </head>
 <body data-page="publish">
 
   <div data-layout="header" data-variant="solid"></div>
 
-  <main class="publish">
+  <main class="publish" id="contenido" tabindex="-1">
     <div class="container publish__grid">
 
       <!-- ===== Wizard ===== -->
@@ -59,9 +76,9 @@
                 </span>
               </label>
             </div>
-            <p class="field__label" style="margin-top:22px">Elegí el producto</p>
-            <div class="product-pick" data-product-pick></div>
-            <p class="field__error" data-error="product">Elegí un producto para continuar.</p>
+            <p class="field__label" style="margin-top:22px" id="product-label">Elegí el producto</p>
+            <div class="product-pick" role="radiogroup" aria-labelledby="product-label" data-product-pick></div>
+            <p class="field__error" id="err-product" data-error="product">Elegí un producto para continuar.</p>
           </fieldset>
 
           <!-- STEP 2: quantity -->
@@ -74,7 +91,7 @@
                   <input class="input" type="number" name="qty" min="1" step="1" placeholder="Ej. 120" inputmode="numeric">
                   <span data-unit-label>kg</span>
                 </div>
-                <span class="field__error">Ingresá una cantidad mayor a 0.</span>
+                <span class="field__error" id="err-qty">Ingresá una cantidad mayor a 0.</span>
               </label>
               <div class="presets" data-presets>
                 <button type="button" class="chip" data-preset="50">50</button>
@@ -100,7 +117,7 @@
             <label class="field">
               <span class="field__label">Precio por <span data-unit-label>kg</span> (colones)</span>
               <div class="price-input"><span>₡</span><input class="input" type="number" name="price" min="1" step="5" placeholder="350" inputmode="numeric"></div>
-              <span class="field__error">Ingresá un precio válido.</span>
+              <span class="field__error" id="err-price">Ingresá un precio válido.</span>
               <span class="price-hint" data-price-hint></span>
             </label>
             <label class="field">
@@ -121,12 +138,12 @@
               <label class="field">
                 <span class="field__label">Tu nombre o el de la finca</span>
                 <input class="input" type="text" name="producer" maxlength="40" placeholder="Ej. Finca Los Laureles">
-                <span class="field__error">¿Cómo te llamás?</span>
+                <span class="field__error" id="err-producer">¿Cómo te llamás?</span>
               </label>
               <label class="field">
                 <span class="field__label">WhatsApp</span>
                 <input class="input" type="tel" name="phone" maxlength="9" placeholder="8888-1234" inputmode="numeric">
-                <span class="field__error">Número de 8 dígitos.</span>
+                <span class="field__error" id="err-phone">Número de 8 dígitos.</span>
               </label>
             </div>
             <label class="photo-drop" data-photo-drop>
@@ -175,6 +192,8 @@
   <script src="assets/js/core/store.js"></script>
   <script src="assets/js/components/illustrations.js"></script>
   <script src="assets/js/components/ui.js"></script>
+  <script src="assets/js/components/a11y.js"></script>
+  <script src="assets/js/components/speech.js"></script>
   <script src="assets/js/components/lot-card.js"></script>
   <script src="assets/js/components/lot-detail.js"></script>
   <script src="assets/js/components/layout.js"></script>

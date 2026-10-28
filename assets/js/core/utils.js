@@ -76,9 +76,44 @@ window.GB = window.GB || {};
       whatsapp: '<path d="M4 20l1.2-4A8 8 0 1 1 8 18.8L4 20Z"/><path d="M9 9.5c0 3 2.5 5.5 5.5 5.5l1-1.5-2-1-1 .8a4 4 0 0 1-2-2l.8-1-1-2L9 9.5Z"/>',
       chart: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
       info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/>',
+      sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4"/>',
+      moon: '<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z"/>',
+      accessibility: '<circle cx="12" cy="12" r="9.5"/><circle cx="12" cy="7" r="1.3" fill="currentColor"/><path d="M7 9.5l5 1 5-1M12 10.5v3.5l-2.5 4.5M12 14l2.5 4.5"/>',
+      pause: '<path d="M9 5v14M15 5v14"/>',
+      play: '<path d="M7 4.5v15l12-7.5-12-7.5Z"/>',
+      stop: '<rect x="6" y="6" width="12" height="12" rx="1.5"/>',
+      volume: '<path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/>',
     };
     return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${paths[name] || ""}</svg>`;
   };
 
-  GB.utils = { $, $$, formatCRC, formatNumber, escapeHtml, debounce, wait, randomCode, timeAgo, icon };
+  /** Visible, enabled elements that can receive keyboard focus inside `container` */
+  const focusables = (container) =>
+    $$('a[href], button:not([disabled]), input:not([disabled]):not([type="hidden"]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])', container)
+      .filter((el) => el.getClientRects().length > 0);
+
+  /** Keydown handler body that keeps Tab / Shift+Tab inside a dialog */
+  const trapFocus = (event, container) => {
+    if (event.key !== "Tab") return;
+    const items = focusables(container);
+    if (!items.length) return;
+    const first = items[0];
+    const last = items[items.length - 1];
+    if (event.shiftKey && (document.activeElement === first || !container.contains(document.activeElement))) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  };
+
+  /** Marks a form control as (in)valid and links it to its error message */
+  const setInvalid = (input, errorEl, invalid) => {
+    input.setAttribute("aria-invalid", String(invalid));
+    if (errorEl && errorEl.id && invalid) input.setAttribute("aria-describedby", errorEl.id);
+    else input.removeAttribute("aria-describedby");
+  };
+
+  GB.utils = { $, $$, formatCRC, formatNumber, escapeHtml, debounce, wait, randomCode, timeAgo, icon, focusables, trapFocus, setInvalid };
 })(window.GB);

@@ -116,13 +116,24 @@ GB.pages = GB.pages || {};
   };
 
   // ---------- Validation ----------
-  const setError = (input, hasError) => input.closest(".field").classList.toggle("has-error", hasError);
+  const setError = (input, hasError) => {
+    const field = input.closest(".field");
+    field.classList.toggle("has-error", hasError);
+    GB.utils.setInvalid(input, $(".field__error", field), hasError);
+  };
+
+  /** Step 1 error lives on the product radio group */
+  const setProductError = (hasError) => {
+    $('[data-step="1"]', form).classList.toggle("has-error", hasError);
+    GB.utils.setInvalid($("[data-product-pick]"), $("#err-product"), hasError);
+  };
 
   const validateStep = (step) => {
     const v = values();
     if (step === 1) {
       const ok = Boolean(v.product);
-      $('[data-step="1"]', form).classList.toggle("has-error", !ok);
+      setProductError(!ok);
+      if (!ok) $('[data-product-pick] input', form).focus();
       return ok;
     }
     if (step === 2) {
@@ -142,6 +153,8 @@ GB.pages = GB.pages || {};
       const phoneOk = v.phone.length === 8;
       setError(form.elements.producer, !nameOk);
       setError(form.elements.phone, !phoneOk);
+      if (!nameOk) form.elements.producer.focus();
+      else if (!phoneOk) form.elements.phone.focus();
       return nameOk && phoneOk;
     }
     return true;
@@ -150,7 +163,7 @@ GB.pages = GB.pages || {};
   const goToStep = (step) => {
     currentStep = Math.max(1, Math.min(TOTAL_STEPS, step));
     renderProgress();
-    $(".wizard").scrollIntoView({ behavior: "smooth", block: "start" });
+    $(".wizard").scrollIntoView({ behavior: GB.a11y.scrollBehavior(), block: "start" });
   };
 
   // ---------- Photo upload (resized with canvas) ----------
@@ -230,7 +243,7 @@ GB.pages = GB.pages || {};
         // Suggest a title when the producer picks a product
         const v = values();
         form.elements.title.value = buildLot({ ...v, title: "" }).title;
-        $('[data-step="1"]', form).classList.remove("has-error");
+        setProductError(false);
         renderUnit();
       }
       if (e.target.name === "photo") handlePhoto(e.target.files[0]);

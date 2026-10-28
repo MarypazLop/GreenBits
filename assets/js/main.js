@@ -16,6 +16,8 @@
   document.addEventListener("DOMContentLoaded", () => {
     hydrateIcons();
     GB.layout.init();
+    GB.speech.init();
+    GB.a11y.init(); // after the layout: wires the navbar dark-mode toggle
 
     const page = document.body.dataset.page;
     if (GB.pages && GB.pages[page]) GB.pages[page].init();
